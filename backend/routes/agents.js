@@ -28,7 +28,6 @@ router.post('/calmguard', async (req, res) => {
     res.status(500).json({ success: false, error: error.message });
   }
 });
-
 // ==================== FOCUSAGENT ====================
 router.post('/focus', async (req, res) => {
   try {
@@ -120,7 +119,6 @@ router.post('/phon', async (req, res) => {
   try {
     const { texto } = req.body;
     console.log('📖 PhonAgent chamado');
-
     let textoCorrigido = texto || '';
     textoCorrigido = textoCorrigido
       .replace(/dazer/gi, 'fazer')
@@ -141,7 +139,6 @@ router.post('/notify', async (req, res) => {
   try {
     const { tempoInativo } = req.body;
     console.log(`🔔 NotifyAgent chamado (inativo: ${tempoInativo}s)`);
-
     res.json({
       success: true,
       agent: 'NotifyAgent',

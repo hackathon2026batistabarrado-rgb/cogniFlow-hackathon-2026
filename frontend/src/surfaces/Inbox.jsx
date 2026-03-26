@@ -166,7 +166,6 @@ function RascunhoResposta({ texto, justificativa, onChange, onEnviar, onDescarta
 // Componente principal
 // ---------------------------------------------------------------------------
 export default function Inbox({
-  panelVisible,
   setCognitive,
   setInterpretacoes,
   setCalmguard,

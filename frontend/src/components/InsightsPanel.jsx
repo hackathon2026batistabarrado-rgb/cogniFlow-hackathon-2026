@@ -161,7 +161,6 @@ export default function InsightsPanel({
   calmguard = null,
   interpretacoes = [],
   onInterpSelect,
-  historicoMTI = [],
 }) {
   const [selectedRascunho, setSelectedRascunho] = useState(null)
 

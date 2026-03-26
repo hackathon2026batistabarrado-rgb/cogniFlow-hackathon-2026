@@ -1,4 +1,11 @@
 # CogniFlow
+
+[![Azure](https://img.shields.io/badge/Azure-0089D6?style=flat&logo=microsoft-azure&logoColor=white)](https://azure.microsoft.com)
+[![MIT License](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org/licenses/MIT)
+[![React](https://img.shields.io/badge/React-19-61DAFB?logo=react)](https://react.dev)
+[![Node.js](https://img.shields.io/badge/Node.js-20-339933?logo=node.js)](https://nodejs.org)
+
+
 ### Microsoft Innovation Challenge Hackathon — March 2026
 **Challenge #3: Cognitive Load Reduction Assistant**
 
@@ -110,8 +117,7 @@ Scale: 0 to 100. **A falling index during a session = evidence of effectiveness.
 
 ---
 
-## ☁️ Azure Services (15)
-
+## ☁️ Azure Services (9)
 | # | Service | Role |
 |---|---------|------|
 | 1 | **Azure AI Foundry** | Central hub — orchestrates all agents |
@@ -120,15 +126,20 @@ Scale: 0 to 100. **A falling index during a session = evidence of effectiveness.
 | 4 | **Azure AI Language** | NLU for ContextAgent ambiguity detection |
 | 5 | **Azure AI Speech** | Neural TTS/STT for PhonAgent |
 | 6 | **Azure Document Intelligence** | Semantic PDF parsing |
-| 7 | **Azure Immersive Reader** | Native dyslexia-optimized rendering |
-| 8 | **Azure Cosmos DB** | Behavioral profile per session |
-| 9 | **Azure AI Content Safety** | CalmGuard primary filter |
-| 10 | **Azure Key Vault** | Credential management |
-| 11 | **Azure Web App / App Service** | Frontend PWA + backend deploy |
-| 12 | **Azure Functions** | Serverless orchestration (BlendIt, NotifyAgent) |
-| 13 | **Azure Monitor + App Insights** | RAI audit trail |
-| 14 | **Azure API Management** | Single entry point, rate limiting |
-| 15 | **Azure Notification Hubs** | Mobile push roadmap (provisioned) |
+| 7 | **Azure Cosmos DB** | Behavioral profile per session |
+| 8 | **Azure AI Content Safety** | CalmGuard primary filter |
+| 9 | **Azure App Service** | Backend hosting |
+
+---
+
+## 📈 Expected Impact
+
+| Metric | Baseline (without CogniFlow) | Target (with CogniFlow) |
+|--------|------------------------------|-------------------------|
+| MTI Score | 70-85 | 40-55 |
+| Task Completion | 60% | 85% |
+| Session Hesitations | 8-12 per hour | 2-4 per hour |
+| User Satisfaction | N/A | 4.5/5 |
 
 ---
 
@@ -165,11 +176,8 @@ CalmGuard is the architectural equivalent of Responsible AI — not a compliance
 - Azure Cosmos DB
 - Azure AI Search
 - Azure AI Content Safety
-- Azure Key Vault
 - Azure App Service
-- Azure Monitor + App Insights
-
----
+----
 
 ## 💻 How to Run
 
@@ -201,24 +209,187 @@ Open: `http://localhost:5173`
 
 ```
 cogniflow/
+│
 ├── backend/
-│   ├── agents/          ← one file per agent
-│   ├── routes/          ← /api/* endpoints
-│   ├── services/        ← openai.js, cosmos.js
+│   ├── agents/
+│   │   ├── blendIt.js
+│   │   ├── calmGuard.js
+│   │   ├── contextAgent.js
+│   │   ├── focusAgent.js
+│   │   ├── notifyAgent.js
+│   │   ├── photoAgent.js
+│   │   └── profileSense.js
+│   │
+│   ├── routes/
+│   │   ├── agents.js
+│   │   ├── data.js
+│   │   └── profilesense.js
+│   │
+│   ├── services/
+│   │   ├── azure-search.js
+│   │   ├── blendit.js
+│   │   ├── calmguard.js
+│   │   ├── cosmos.js
+│   │   ├── foundry.js
+│   │   ├── openai.js
+│   │   ├── phon.js
+│   │   ├── profilesense.js
+│   │   └── rag.js
+│   │
+│   ├── .env
+│   ├── package.json
+│   ├── package-lock.json
 │   └── server.js
 │
-└── frontend/
-    └── src/
-        ├── components/  ← Topbar, Sidebar, InsightsPanel, WebPush
-        ├── surfaces/    ← Editor, Inbox, Tasks
-        ├── hooks/       ← useBehaviorCapture, useAgents, useNotifications
-        ├── services/    ← agentClient.js
-        ├── capture/     ← behaviorEngine.js
-        ├── mockData/    ← emails, tasks, personas
-        └── theme/       ← design tokens
+├── frontend/
+│   ├── public/
+│   ├── src/
+│   │   │
+│   │   ├── assets/
+│   │   ├── capture/
+│   │   │
+│   │   ├── components/
+│   │   │   ├── CognitiveInterventionCard.jsx
+│   │   │   ├── CognitiveStateIndicator.jsx
+│   │   │   ├── DemoSimulator.jsx
+│   │   │   ├── FeedbackToast.jsx
+│   │   │   ├── InsightsPanel.jsx
+│   │   │   ├── NewDocumentModal.jsx
+│   │   │   ├── QuickActions.jsx
+│   │   │   ├── Sidebar.jsx
+│   │   │   ├── Sparkline.jsx
+│   │   │   ├── StatusBar.jsx
+│   │   │   ├── SuggestionChips.jsx
+│   │   │   ├── Topbar.jsx
+│   │   │   └── VoiceControls.jsx
+│   │   │
+│   │   ├── config/
+│   │   ├── constants/
+│   │   ├── data/
+│   │   │   └── demoStates.js
+│   │   │
+│   │   ├── hooks/
+│   │   │   └── useSpeechSynthesis.js
+│   │   │
+│   │   ├── mockData/
+│   │   │
+│   │   ├── services/
+│   │   │   ├── agentService.js
+│   │   │   └── speechService.js
+│   │   │
+│   │   ├── surfaces/
+│   │   │   ├── Editor.jsx
+│   │   │   ├── Examples.jsx
+│   │   │   ├── Inbox.jsx
+│   │   │   └── Tasks.jsx
+│   │   │
+│   │   ├── theme/
+│   │   │   └── tokens.js
+│   │   │
+│   │   ├── types/
+│   │   │
+│   │   ├── App.jsx
+│   │   ├── App.css
+│   │   ├── index.css
+│   │   └── main.jsx
+│   │
+│   ├── .gitignore
+│   ├── eslint.config.js
+│   └── index.html
+│
+└── README.md
+```
+
+
+## 📊  Agent Decision Flow
+
+```text
+[React Editor]
+      │
+      ▼
+[ProfileSense] ── Detects cognitive load type
+      │
+      ├──► Executive Load? ──► [FocusAgent]
+      │
+      ├──► Contextual Load? ──► [ContextAgent]
+      │
+      └──► Phonological Load? ──► [PhonAgent]
+                    │
+                    ▼
+            [Multiple Agents Active?]
+                    │
+        ┌───────────┼───────────┐
+        │           │           │
+        ▼           ▼           ▼
+   [BlendIt]  [CalmGuard]  [NotifyAgent]
+   (Combine)  (Regulate)   (Notify)
 ```
 
 ---
+## 📊 Agent Decision Flow
+
+| Step | Component | Description |
+|------|-----------|-------------|
+| 1 | **React Editor** | User interacts with the frontend (typing, editing, scrolling) |
+| 2 | **ProfileSense** | Analyzes behavioral patterns and classifies the dominant cognitive load type |
+| 3 | **FocusAgent** | Activated when executive load score ≥ 1 (tasks, deadlines, organization) |
+| 4 | **ContextAgent** | Activated when contextual load score ≥ 1 (ambiguity, vague language) |
+| 5 | **PhonAgent** | Activated when phonological load score ≥ 1 (long texts, phonetic errors) |
+| 6 | **Decision Point** | Checks if multiple agents are activated simultaneously |
+| 7 | **BlendIt** | If multiple agents active → combines interventions |
+| 8 | **CalmGuard** | Always active → filters language for emotional safety |
+| 9 | **NotifyAgent** | Determines opportune moments to send notifications |
+
+### Visual Flow
+
+```text
+[React Editor]
+      │
+      ▼
+[ProfileSense] ── Classifies cognitive load
+      │
+      ├──► Score ≥ 1 ──► [FocusAgent]      (Executive Load)
+      │
+      ├──► Score ≥ 1 ──► [ContextAgent]    (Contextual Load)
+      │
+      └──► Score ≥ 1 ──► [PhonAgent]       (Phonological Load)
+                    │
+                    ▼
+            [Multiple Agents?]
+                    │
+        ┌───────────┼───────────┐
+        │           │           │
+        ▼           ▼           ▼
+   [BlendIt]   [CalmGuard]  [NotifyAgent]
+   (Combine)   (Filter)     (Schedule)
+```
+---
+## 🔄 RAG - Retrieval-Augmented Generation
+
+### How RAG Enhances Agents
+
+```text
+┌─────────────────────────────────────────────────────────────┐
+│ RAG - Data Flow                                             │
+├─────────────────────────────────────────────────────────────┤
+│                                                             │
+│ User                                                        │
+│ │                                                           │
+│ ▼                                                           │
+│ Interaction ──► Cosmos DB ──► Azure Search ──► Profile      │
+│ │                  │              │              │          │
+│ │                  ▼              ▼              │          │
+│ │                  Indexing       Personalization│          │
+│ │                                                 │         │
+│ └─────────────────────────────────────────────────┘         │
+│                     │                                       │
+│                     ▼                                       │
+│                Agents with Context                          │
+│                                                             │
+└─────────────────────────────────────────────────────────────┘
+```
+
+
 
 ## 🔭 Next Steps (Post-Hackathon)
 
@@ -227,6 +398,12 @@ cogniflow/
 - Deploy Azure Notification Hubs for native iOS and Android push notifications.
 - Build user profile persistence with longitudinal MTI tracking across sessions.
 - Validate Masking Tax Index calibration with neurodivergent professionals in real workplaces.
+
+---
+## 🎥 Demo
+ 
+[Video Presentation](https://youtu.be/...)
+
 
 ---
 
@@ -246,7 +423,7 @@ cogniflow/
 ## 👥 Team
 
 - **Letícia Batista Silva**
-- **Erika Barrado**
+- **Erika Arias Barrado**
 
 ---
 
