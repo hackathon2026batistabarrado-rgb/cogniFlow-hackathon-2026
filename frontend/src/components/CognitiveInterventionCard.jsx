@@ -3,7 +3,8 @@ export default function CognitiveInterventionCard({
   estadoDetectado, 
   onAction, 
   errosFoneticos = [], 
-  agenteAtivo = null  // ← RECEBER A PROP
+  agenteAtivo = null,
+  justificativaAgente = null
 }) {
   const { estado, confianca, score } = estadoDetectado
   const temErrosFoneticos = errosFoneticos && errosFoneticos.length > 0
@@ -82,6 +83,16 @@ export default function CognitiveInterventionCard({
         <div>Executivo: {score.executivo}</div>
         <div>Contextual: {score.contextual}</div>
         <div>Fonológico: {score.fonologico}</div>
+      </div>
+
+      {/* NOVO BOX DE TRANSPARÊNCIA (O "WHY") */}
+      <div style={styles.explanationBox}>
+        <div style={styles.explanationTitle}>
+          <span style={{ marginRight: 4 }}>ⓘ</span> Por que esta sugestão?
+        </div>
+        <div style={styles.explanationText}>
+          {justificativaAgente || "Análise baseada em padrões de interação capturados passivamente pelo ProfileSense."}
+        </div>
       </div>
       
       {temErrosFoneticos && agentePrincipal !== 'FocusAgent' && agentePrincipal !== 'ContextAgent' && (
@@ -222,5 +233,28 @@ const styles = {
     cursor: 'pointer',
     fontSize: 13,
     color: '#dc2626',
+  },
+  explanationBox: {
+    background: 'rgba(43, 92, 230, 0.05)', // azul bem clarinho
+    borderLeft: '3px solid #2b5ce6',
+    padding: '10px',
+    borderRadius: '4px 8px 8px 4px',
+    marginBottom: 12,
+  },
+  explanationTitle: {
+    fontSize: 11,
+    fontWeight: 700,
+    color: '#2b5ce6',
+    textTransform: 'uppercase',
+    letterSpacing: '0.02em',
+    marginBottom: 4,
+    display: 'flex',
+    alignItems: 'center'
+  },
+  explanationText: {
+    fontSize: 12,
+    color: '#4a4640',
+    lineHeight: 1.4,
+    fontStyle: 'italic'
   },
 }

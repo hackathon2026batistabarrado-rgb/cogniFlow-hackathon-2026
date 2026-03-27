@@ -15,6 +15,7 @@ Você deve:
 
 Formato obrigatório:
 {
+  "justificativa": "Explicação técnica mas acolhedora do PORQUÊ esta análise está sendo feita (ex: Sugeri o esclarecimento pois a mensagem possui múltiplos caminhos de ação sem prazos definidos).",
   "ambiguidade_detectada": true,
   "nivel_ambiguidade": "baixo | medio | alto",
   "resumo_claro": "explicação curta e objetiva",
@@ -53,6 +54,7 @@ function limparMensagem(texto) {
 
 function fallbackAnalise(mensagem = '') {
   return {
+    justificativa: "Análise baseada em padrões de comunicação inconclusiva detectados pelo ProfileSense.",
     ambiguidade_detectada: true,
     nivel_ambiguidade: 'medio',
     resumo_claro: 'A mensagem sugere uma expectativa de resposta, mas não deixa claros prazo, prioridade ou formato da entrega.',

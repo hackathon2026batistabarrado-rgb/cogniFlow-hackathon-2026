@@ -1,291 +1,276 @@
 import React, { useState, useEffect } from 'react'
 
+const NAV_ITEMS = [
+  {
+    id: 'editor',
+    icon: (
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/>
+      </svg>
+    ),
+    label: 'Editor',
+  },
+  {
+    id: 'tasks',
+    icon: (
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
+        <polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/>
+      </svg>
+    ),
+    label: 'Tarefas',
+  },
+  {
+    id: 'inbox',
+    icon: (
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
+        <polyline points="22 12 16 12 14 15 10 15 8 12 2 12"/>
+        <path d="M5.45 5.11L2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"/>
+      </svg>
+    ),
+    label: 'Inbox',
+    badge: 2,
+  },
+  {
+    id: 'examples',
+    icon: (
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
+        <rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/>
+        <rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/>
+      </svg>
+    ),
+    label: 'Exemplos',
+  },
+]
+
 export default function Sidebar({ surface, onSwitch }) {
-  const docs = [
-    { id: 'arch', icon: '📄', name: 'Arquitetura CogniFlow', badge: 'docx' },
-    { id: 'sprint', icon: '📋', name: 'Sprint Planning v2', badge: 'md' },
-    { id: 'rfc', icon: '⚙', name: 'RFC: Multi-Agent Orch…', badge: 'md' },
-  ]
-
-  const pills = [
-    { id: 'editor', label: 'Editor' },
-    { id: 'inbox', label: 'Inbox', badge: 2 },
-    { id: 'examples', label: 'Exemplos' },
-    { id: 'tasks', label: 'Tarefas' },
-  ]
-
-  // Estados para o Cosmos DB
   const [cosmosConnected, setCosmosConnected] = useState(false)
   const [totalDocumentos, setTotalDocumentos] = useState(0)
-  const [tps, setTps] = useState(0)
   const [isLoading, setIsLoading] = useState(true)
-  const [error, setError] = useState(null)
 
-  // Buscar status do Cosmos DB
   useEffect(() => {
     const fetchDbStatus = async () => {
       try {
-        console.log('🔄 Buscando status do Cosmos DB...')
-        
         const response = await fetch('http://localhost:3000/api/db-status')
         const data = await response.json()
-        
-        console.log('📊 Dados recebidos do backend:', data)
-        
         setCosmosConnected(data.connected || false)
-        
-        // Calcular total de documentos
         const total = (data.registros?.eventos || 0) + (data.registros?.insights || 0)
         setTotalDocumentos(total)
-        
-        // Calcular TPS aproximado (baseado no número de documentos)
-        const tpsCalculado = total > 1000 ? 3 : total > 100 ? 2 : 1
-        setTps(tpsCalculado)
-        
-        setError(null)
-        
-      } catch (error) {
-        console.error('❌ Erro ao buscar status do banco:', error)
-        setError(error.message)
+      } catch {
         setCosmosConnected(false)
         setTotalDocumentos(0)
-        setTps(0)
       } finally {
         setIsLoading(false)
       }
     }
-    
     fetchDbStatus()
-    
-    // Atualizar a cada 30 segundos
     const interval = setInterval(fetchDbStatus, 30000)
     return () => clearInterval(interval)
   }, [])
 
-  // Formatar número com separadores
-  const formatNumber = (num) => {
-    return num.toLocaleString('pt-BR')
-  }
-
   return (
-    <div
-      style={{
-        width: 220,
-        flexShrink: 0,
-        background: 'var(--surface)',
-        borderRight: '1px solid var(--border)',
-        display: 'flex',
-        flexDirection: 'column',
-        overflowY: 'auto',
-      }}
-    >
-      {/* Botão Novo Documento */}
-      <button
-        onClick={() => onSwitch('editor')}
-        style={{
-          margin: '8px 12px 4px',
-          padding: '8px 12px',
-          background: 'var(--ink)',
-          color: 'var(--surface)',
-          border: 'none',
-          borderRadius: 7,
-          fontFamily: 'var(--sans)',
-          fontSize: '.78rem',
-          fontWeight: 500,
-          cursor: 'pointer',
-          display: 'flex',
-          alignItems: 'center',
-          gap: 6,
-        }}
-      >
-        + Novo documento
-      </button>
-
-      {/* Pills de navegação */}
-      <div style={{ display: 'flex', gap: 2, padding: '8px 12px 4px', flexWrap: 'wrap' }}>
-        {pills.map((p) => (
-          <button
-            key={p.id}
-            onClick={() => onSwitch(p.id)}
-            style={{
-              flex: p.id === 'examples' ? '1 0 100%' : 1,
-              padding: '5px 4px',
-              borderRadius: 6,
-              border: '1px solid transparent',
-              fontSize: '.7rem',
-              fontWeight: 500,
-              cursor: 'pointer',
-              background: surface === p.id ? 'var(--accent-s)' : 'transparent',
-              color: surface === p.id ? 'var(--accent)' : 'var(--ink3)',
-              borderColor: surface === p.id ? 'rgba(43,92,230,.15)' : 'transparent',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              gap: 4,
-            }}
-          >
-            {p.label}
-            {p.badge && (
-              <span
-                style={{
-                  fontSize: 8,
-                  padding: '1px 5px',
-                  borderRadius: 8,
-                  background: 'var(--accent)',
-                  color: 'white',
-                  fontFamily: 'var(--mono)',
-                }}
-              >
-                {p.badge}
-              </span>
-            )}
-          </button>
-        ))}
+    <nav style={styles.sidebar}>
+      {/* Logo mark */}
+      <div style={styles.logoArea}>
+        <div style={styles.logoMark}>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+            <circle cx="12" cy="12" r="10" stroke="white" strokeWidth="2"/>
+            <path d="M8 12h8M12 8v8" stroke="white" strokeWidth="2" strokeLinecap="round"/>
+          </svg>
+        </div>
       </div>
 
-      {/* Recentes */}
-      <div style={{ padding: '12px 12px 8px' }}>
-        <div
-          style={{
-            fontFamily: 'var(--mono)',
-            fontSize: 9,
-            letterSpacing: '.1em',
-            color: 'var(--ink3)',
-            textTransform: 'uppercase',
-            padding: '0 6px',
-            marginBottom: 6,
-          }}
-        >
-          Recentes
-        </div>
-
-        {docs.map((doc, i) => (
-          <div
-            key={doc.id}
-            onClick={() => onSwitch('editor')}
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: 8,
-              padding: '7px 8px',
-              borderRadius: 6,
-              cursor: 'pointer',
-              fontSize: '.8rem',
-              color: 'var(--ink2)',
-              background: i === 0 ? 'var(--accent-s)' : 'transparent',
-              marginBottom: 2,
-            }}
-            onMouseEnter={(e) => {
-              if (i !== 0) e.currentTarget.style.background = 'var(--bg2)'
-            }}
-            onMouseLeave={(e) => {
-              if (i !== 0) e.currentTarget.style.background = 'transparent'
-            }}
-          >
-            <span style={{ fontSize: 13, width: 16, textAlign: 'center' }}>{doc.icon}</span>
-            <span style={{ flex: 1, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-              {doc.name}
-            </span>
-            <span
+      {/* Nav items */}
+      <div style={styles.navItems}>
+        {NAV_ITEMS.map((item) => {
+          const isActive = surface === item.id
+          return (
+            <button
+              key={item.id}
+              onClick={() => onSwitch(item.id)}
               style={{
-                fontFamily: 'var(--mono)',
-                fontSize: 8,
-                padding: '1px 5px',
-                borderRadius: 3,
-                background: 'var(--bg3)',
-                color: 'var(--ink3)',
+                ...styles.navBtn,
+                ...(isActive ? styles.navBtnActive : {}),
+              }}
+              title={item.label}
+              onMouseEnter={e => {
+                if (!isActive) {
+                  e.currentTarget.style.background = 'rgba(43,92,230,0.06)'
+                  e.currentTarget.style.color = 'var(--ink)'
+                }
+              }}
+              onMouseLeave={e => {
+                if (!isActive) {
+                  e.currentTarget.style.background = 'transparent'
+                  e.currentTarget.style.color = 'var(--ink3)'
+                }
               }}
             >
-              {doc.badge}
-            </span>
-          </div>
-        ))}
+              <span style={{ position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                {item.icon}
+                {item.badge && (
+                  <span style={styles.badge}>{item.badge}</span>
+                )}
+              </span>
+              <span style={styles.navLabel}>{item.label}</span>
+
+              {/* Active indicator */}
+              {isActive && <span style={styles.activeBar} />}
+            </button>
+          )
+        })}
       </div>
 
-      {/* Atividades */}
-      <div style={{ padding: '4px 12px 8px' }}>
-        <div
-          style={{
-            fontFamily: 'var(--mono)',
-            fontSize: 9,
-            letterSpacing: '.1em',
-            color: 'var(--ink3)',
-            textTransform: 'uppercase',
-            padding: '0 6px',
-            marginBottom: 6,
-          }}
-        >
-          Atividades
-        </div>
-
-        {[
-          { icon: '✓', label: 'Lista de tarefas', surf: 'tasks' },
-          { icon: '✉', label: 'Inbox', surf: 'inbox', dot: true },
-          { icon: '▣', label: 'Exemplos', surf: 'examples' },
-        ].map((item) => (
-          <div
-            key={item.surf}
-            onClick={() => onSwitch(item.surf)}
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: 8,
-              padding: '7px 8px',
-              borderRadius: 6,
-              cursor: 'pointer',
-              fontSize: '.8rem',
-              color: 'var(--ink2)',
-              marginBottom: 2,
-            }}
-            onMouseEnter={(e) => (e.currentTarget.style.background = 'var(--bg2)')}
-            onMouseLeave={(e) => (e.currentTarget.style.background = 'transparent')}
-          >
-            <span style={{ fontSize: 13, width: 16, textAlign: 'center' }}>{item.icon}</span>
-            <span style={{ flex: 1 }}>{item.label}</span>
-            {item.dot && <div style={{ width: 6, height: 6, borderRadius: '50%', background: 'var(--accent)' }} />}
-          </div>
-        ))}
-      </div>
-
-      {/* Cosmos DB Status */}
-      <div style={{ marginTop: 'auto', padding: '12px' }}>
-        <div
-          style={{
-            fontFamily: 'var(--mono)',
-            fontSize: 9,
-            letterSpacing: '.1em',
-            color: 'var(--ink3)',
-            textTransform: 'uppercase',
-            padding: '0 6px',
-            marginBottom: 6,
-          }}
-        >
-          Cosmos DB
-        </div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '7px 8px' }}>
-          <span style={{ 
-            width: 8, 
-            height: 8, 
-            borderRadius: '50%', 
+      {/* Bottom status */}
+      <div style={styles.bottomArea}>
+        <div style={styles.statusDot}>
+          <span style={{
+            ...styles.dot,
             background: cosmosConnected ? '#22c55e' : '#f97316',
-            display: 'inline-block',
-            animation: cosmosConnected ? 'pulse 2s infinite' : 'none'
           }} />
-          <span style={{ fontFamily: 'var(--mono)', fontSize: '.72rem', color: 'var(--ink3)' }}>
-            {cosmosConnected ? '☁️ Cosmos DB' : '📦 Modo Local'} · {formatNumber(totalDocumentos)} docs · {tps}/s
+          <span style={styles.statusText}>
+            {isLoading ? '…' : cosmosConnected ? 'Cloud' : 'Local'}
           </span>
         </div>
-        {isLoading && (
-          <div style={{ fontSize: '.65rem', color: 'var(--ink3)', padding: '4px 8px' }}>
-            🔄 sincronizando...
-          </div>
-        )}
-        {error && (
-          <div style={{ fontSize: '.65rem', color: '#ef4444', padding: '4px 8px' }}>
-            ⚠️ Erro: {error}
-          </div>
-        )}
+        <span style={styles.docsCount}>
+          {totalDocumentos.toLocaleString('pt-BR')} docs
+        </span>
       </div>
-    </div>
+
+      <style>{`
+        @keyframes pulse {
+          0%, 100% { opacity: 1; transform: scale(1); }
+          50% { opacity: 0.5; transform: scale(0.8); }
+        }
+      `}</style>
+    </nav>
   )
+}
+
+const styles = {
+  sidebar: {
+    width: 72,
+    flexShrink: 0,
+    background: 'var(--surface)',
+    borderRight: '1px solid var(--border)',
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    paddingTop: 8,
+    paddingBottom: 12,
+    gap: 0,
+    overflowY: 'auto',
+  },
+  logoArea: {
+    marginBottom: 20,
+    padding: '8px 0',
+  },
+  logoMark: {
+    width: 36,
+    height: 36,
+    borderRadius: 10,
+    background: 'var(--ink)',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  navItems: {
+    flex: 1,
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    gap: 4,
+    width: '100%',
+    padding: '0 8px',
+  },
+  navBtn: {
+    width: '100%',
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 4,
+    padding: '10px 6px',
+    border: 'none',
+    borderRadius: 10,
+    background: 'transparent',
+    color: 'var(--ink3)',
+    cursor: 'pointer',
+    position: 'relative',
+    transition: 'all 0.18s ease',
+    minHeight: 60,
+  },
+  navBtnActive: {
+    background: 'var(--accent-s)',
+    color: 'var(--accent)',
+  },
+  navLabel: {
+    fontSize: 9,
+    fontWeight: 600,
+    letterSpacing: '0.04em',
+    textTransform: 'uppercase',
+    fontFamily: 'var(--mono)',
+    lineHeight: 1,
+  },
+  activeBar: {
+    position: 'absolute',
+    left: -8,
+    top: '50%',
+    transform: 'translateY(-50%)',
+    width: 3,
+    height: 24,
+    borderRadius: '0 3px 3px 0',
+    background: 'var(--accent)',
+  },
+  badge: {
+    position: 'absolute',
+    top: -6,
+    right: -8,
+    width: 16,
+    height: 16,
+    borderRadius: '50%',
+    background: 'var(--accent)',
+    color: 'white',
+    fontSize: 9,
+    fontWeight: 700,
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    fontFamily: 'var(--mono)',
+  },
+  bottomArea: {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    gap: 3,
+    marginTop: 'auto',
+    paddingTop: 16,
+    borderTop: '1px solid var(--border)',
+    width: '100%',
+    padding: '12px 8px 0',
+  },
+  statusDot: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: 5,
+  },
+  dot: {
+    width: 6,
+    height: 6,
+    borderRadius: '50%',
+    display: 'inline-block',
+    animation: 'pulse 2s infinite',
+  },
+  statusText: {
+    fontSize: 9,
+    fontFamily: 'var(--mono)',
+    color: 'var(--ink3)',
+    fontWeight: 600,
+    textTransform: 'uppercase',
+    letterSpacing: '0.06em',
+  },
+  docsCount: {
+    fontSize: 8,
+    fontFamily: 'var(--mono)',
+    color: 'var(--ink3)',
+  },
 }

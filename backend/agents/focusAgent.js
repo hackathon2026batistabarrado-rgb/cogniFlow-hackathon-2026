@@ -12,6 +12,7 @@ Você DEVE retornar APENAS JSON. A palavra "JSON" deve estar no seu prompt.
 
 Retorne APENAS em JSON:
 {
+  "justificativa": "Explicação do PORQUÊ (ex: Notei sinais de paralisia executiva e oscilação de ritmo, por isso fragmentei a tarefa para facilitar o início).",
   "intervencao": "frase de acolhimento curta",
   "micro_tarefas": [
     { "id": 1, "descricao": "ação concreta", "ancora": "~1 música" }
@@ -54,6 +55,7 @@ async function fragmentar(tarefa, contexto = 'profissional de tecnologia') {
 
 function fallbackResposta() {
   return {
+    justificativa: "Fragmentação sugerida para reduzir a carga executiva após detecção de sinais de abandono de tarefa.",
     intervencao: 'Vamos organizar isso passo a passo, no seu ritmo.',
     micro_tarefas: [
       { id: 1, descricao: 'Divida a tarefa em partes menores', ancora: '~1 música' },

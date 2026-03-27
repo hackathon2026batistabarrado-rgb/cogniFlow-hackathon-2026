@@ -34,13 +34,7 @@ export default function App() {
 
   const startTime = useRef(Date.now())
 
-  const {
-    isSpeaking,
-    speak,
-    pause,
-    resume,
-    stop,
-  } = useSpeechSynthesis()
+  const { isSpeaking, speak, pause, resume, stop } = useSpeechSynthesis()
 
   // ⏱️ Session timer
   useEffect(() => {
@@ -50,16 +44,12 @@ export default function App() {
       const ss = (elapsed % 60).toString().padStart(2, '0')
       setSessionTime(`${mm}:${ss}`)
     }, 1000)
-
     return () => clearInterval(timer)
   }, [])
 
-  // 📡 Enviar métricas + insights
+  // 📡 Enviar métricas
   async function enviarMetricas(metricas) {
     try {
-      console.log('🚀🚀🚀 ENVIANDO MÉTRICAS 🚀🚀🚀')
-      console.log('📊 Dados:', metricas)
-
       const response = await fetch(`${BACKEND}/eventos`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -69,18 +59,12 @@ export default function App() {
           ...metricas,
         }),
       })
-
-      console.log('📡 Resposta do servidor:', response.status)
-
       if (response.ok) {
         setEvents((e) => e + 1)
         setMetrics(metricas)
-        console.log('✅✅✅ Métricas enviadas com sucesso ✅✅✅')
-      } else {
-        console.error('❌ Erro ao enviar métricas:', response.status)
       }
     } catch (e) {
-      console.error('❌❌❌ Erro crítico:', e)
+      console.error('❌ Erro crítico:', e)
     }
   }
 
@@ -96,18 +80,14 @@ export default function App() {
           mensagem: 'contexto atual',
         }),
       })
-
       if (!res.ok) return
-
       const data = await res.json()
-
       setCognitive({
         carga: classificacao?.tipo || 'neutro',
         confianca: classificacao?.confianca || 0,
         agente: data?.prioridade || 'BlendIt',
         justificativa: data?.intervencao_final || '',
       })
-
       showToast(data?.intervencao_final, 'cognitive')
     } catch (e) {
       console.warn('BlendIt indisponível:', e)
@@ -129,7 +109,7 @@ export default function App() {
           origin: { y: 0.6 },
           colors: ['#2b5ce6', '#1a7a4a', '#b45309', '#6d28d9'],
         })
-      }).catch(() => { })
+      }).catch(() => {})
     }
   }
 
@@ -143,17 +123,13 @@ export default function App() {
           const res = await fetch(`http://localhost:3000/api/agents/focus`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              tarefa: 'tarefa atual',
-              contexto: 'tecnologia',
-            }),
+            body: JSON.stringify({ tarefa: 'tarefa atual', contexto: 'tecnologia' }),
           })
-
           if (res.ok) {
             const data = await res.json()
             showToast(`✨ ${data?.intervencao || 'Vamos organizar!'}`, 'success')
             setCognitive({
-              carga: 'executiva',
+              carga: 'executivo',
               confianca: 0.75,
               agente: 'FocusAgent',
               justificativa: data?.intervencao || '',
@@ -161,7 +137,6 @@ export default function App() {
           }
           break
         }
-
         case 'context':
           showToast('🔍 Analisando contexto...', 'cognitive')
           setCognitive({
@@ -171,22 +146,19 @@ export default function App() {
             justificativa: 'Analisando ambiguidades na comunicação',
           })
           break
-
         case 'phon':
           showToast('📖 Ajustando leitura...', 'info')
           setCognitive({
-            carga: 'fonologica',
+            carga: 'fonologico',
             confianca: 0.8,
             agente: 'PhonAgent',
             justificativa: 'Ajustando espaçamento e fonte',
           })
           break
-
         case 'pause':
           showToast('☕ Sugiro uma pausa de 2 minutos', 'warning')
           playConfetti()
           break
-
         default:
           showToast('🧠 Analisando padrões cognitivos...', 'cognitive')
       }
@@ -205,20 +177,15 @@ export default function App() {
   }, [])
 
   // ❤️ Health check backend
-
-  // ❤️ Health check backend
   useEffect(() => {
     const check = async () => {
       try {
         const res = await fetch(`${BACKEND}/health`)
         const data = await res.json()
-
-        // Verificar se veio dados do database
         if (data.database) {
           const mode = data.database.mode
           const connected = data.database.connected
           const totalDocs = (data.database.registros?.eventos || 0) + (data.database.registros?.insights || 0)
-
           if (mode === 'cosmos' && connected) {
             setCosmosStatus(`✅ Cosmos DB (${totalDocs.toLocaleString()} docs)`)
           } else if (mode === 'cosmos') {
@@ -233,7 +200,6 @@ export default function App() {
         setCosmosStatus('❌ Offline')
       }
     }
-
     check()
     const interval = setInterval(check, 30000)
     return () => clearInterval(interval)
@@ -241,25 +207,10 @@ export default function App() {
 
   // 📂 Abrir exemplo no editor
   const openExampleInEditor = (doc) => {
-    localStorage.setItem(
-      'cogniflow_open_doc',
-      JSON.stringify({
-        titulo: doc.titulo,
-        conteudo: doc.conteudo,
-      })
-    )
-
+    localStorage.setItem('cogniflow_open_doc', JSON.stringify({ titulo: doc.titulo, conteudo: doc.conteudo }))
     setSurface('editor')
-
     setTimeout(() => {
-      window.dispatchEvent(
-        new CustomEvent('cogniflow:open-example', {
-          detail: {
-            titulo: doc.titulo,
-            conteudo: doc.conteudo,
-          },
-        })
-      )
+      window.dispatchEvent(new CustomEvent('cogniflow:open-example', { detail: { titulo: doc.titulo, conteudo: doc.conteudo } }))
     }, 50)
   }
 
@@ -297,6 +248,7 @@ export default function App() {
         onTogglePanel={() => setPanelVisible((v) => !v)}
         isSpeaking={isSpeaking}
         onStopSpeech={stop}
+        cognitive={cognitive}
       />
 
       {toast && (
