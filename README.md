@@ -5,6 +5,10 @@
 [![React](https://img.shields.io/badge/React-19-61DAFB?logo=react)](https://react.dev)
 [![Node.js](https://img.shields.io/badge/Node.js-20-339933?logo=node.js)](https://nodejs.org)
 
+## 🎥 Demo & Presentation
+
+- 📊 [View Slides](./cogniflow-ai.pdf)
+- 🎬 [Watch Demo Video](https://youtu.be/G1Daw0z2z1Q)
 
 ### Microsoft Innovation Challenge Hackathon — March 2026
 **Challenge #3: Cognitive Load Reduction Assistant**
@@ -117,18 +121,20 @@ Scale: 0 to 100. **A falling index during a session = evidence of effectiveness.
 
 ---
 
-## ☁️ Azure Services (9)
+## ☁️ Azure Services (10)
+
 | # | Service | Role |
 |---|---------|------|
-| 1 | **Azure AI Foundry** | Central hub — orchestrates all agents |
-| 2 | **Azure OpenAI (GPT-4o)** | Core reasoning engine |
-| 3 | **Azure AI Search** | Semantic RAG over behavioral history |
-| 4 | **Azure AI Language** | NLU for ContextAgent ambiguity detection |
-| 5 | **Azure AI Speech** | Neural TTS/STT for PhonAgent |
-| 6 | **Azure Document Intelligence** | Semantic PDF parsing |
-| 7 | **Azure Cosmos DB** | Behavioral profile per session |
-| 8 | **Azure AI Content Safety** | CalmGuard primary filter |
-| 9 | **Azure App Service** | Backend hosting |
+| 1 | **Azure AI Foundry** | Central hub — orchestrates all 7 agents |
+| 2 | **Azure OpenAI (GPT-4.1 mini)** | Core inference engine |
+| 3 | **Azure AI Search** | RAG + behavioral index enrichment |
+| 4 | **Azure Cosmos DB** | Behavioral profiles + session events |
+| 5 | **Azure AI Content Safety** | CalmGuard real-time filtering |
+| 6 | **Azure Notification Hubs** | Web push delivery via NotifyAgent |
+| 7 | **Azure API Management** | API gateway + rate limiting |
+| 8 | **Azure Key Vault** | Secure credentials & secrets management |
+| 9 | **Azure Monitor** | RAI audit logs + intervention tracking |
+| 10 | **Azure App Service** | Backend + PWA deployment |
 
 ---
 
@@ -400,12 +406,6 @@ cogniflow/
 - Validate Masking Tax Index calibration with neurodivergent professionals in real workplaces.
 
 ---
-## 🎥 Demo
- 
-[Video Presentation](https://youtu.be/...)
-
-
----
 
 ## 📚 Scientific References
 
@@ -422,8 +422,13 @@ cogniflow/
 
 ## 👥 Team
 
-- **Letícia Batista Silva**
-- **Erika Arias Barrado**
+- **Letícia Batista Silva**  
+  [![GitHub](https://img.shields.io/badge/GitHub-leticiabsilva03-181717?logo=github&logoColor=white)](https://github.com/leticiabsilva03)
+  [![LinkedIn](https://img.shields.io/badge/LinkedIn-leticiabatistasilva-0A66C2?logo=linkedin&logoColor=white)](https://www.linkedin.com/in/leticiabatistasilva/)
+
+- **Erika Arias Barrado**  
+  [![GitHub](https://img.shields.io/badge/GitHub-ebarrado-181717?logo=github&logoColor=white)](https://github.com/ebarrado)
+  [![LinkedIn](https://img.shields.io/badge/LinkedIn-erika--arias--barrado-0A66C2?logo=linkedin&logoColor=white)](https://www.linkedin.com/in/erika-arias-barrado/)
 
 ---
 
